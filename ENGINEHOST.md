@@ -7,7 +7,7 @@ Android plugin. Game scripts and assets continue to be read in place.
 
 ## Branches
 
-A core has only these branches (Droidtop/tracker#324, the owner, 2026-11-05):
+A core has only these branches (mytop-project/tracker#324, the owner, 2026-11-05):
 
 - `upstream-sync` follows upstream Ren'Py (`renpy/renpy`). The daily `sync-upstream` workflow
   (on `plugin-core`) merges upstream's `master` into it; nothing of ours is developed there.
@@ -64,7 +64,7 @@ enginehost.json `options`, which the activity passes as
 ## Links the game opens are offered by Enginehost (2026-10-24)
 
 The owner, 2026-10-23: "Enginehost should parse the link type (safely), and then OFFER to open
-it" (Droidtop/tracker#635). Ren'Py opens a link through Python's `webbrowser`: `renpy.open_url`,
+it" (mytop-project/tracker#635). Ren'Py opens a link through Python's `webbrowser`: `renpy.open_url`,
 and a game script's own `webbrowser` calls. Under Enginehost, every line registers
 `renpy/enginehost_links.py`'s browser as `webbrowser`'s preferred one (series patch
 `0007-offer-links-through-enginehost.patch`, installed from `enginehost_platform.present()`). It
@@ -77,7 +77,7 @@ opening unasked.
 ## The game's text goes to Enginehost (2026-10-28)
 
 Enginehost can read a game's lines aloud and translate them (Enginehost docs/text-services.md,
-Droidtop/tracker#490). Every line reports its text with `renpy/enginehost_text.py` (series patch
+mytop-project/tracker#490). Every line reports its text with `renpy/enginehost_text.py` (series patch
 `0008-report-text-to-enginehost.patch`), which `enginehost_platform.present()` installs beside
 the link route, under Enginehost only. It has two hooks, the same from Ren'Py 7.3 to 8.5.
 
@@ -109,7 +109,7 @@ the game loads; on Android Ren'Py opens no presplash window, so it counts nothin
 draws the game's presplash before the core starts, and Series patch 0009
 (`renpy/enginehost_loading.py`, installed by `enginehost_platform.present()` beside the links and
 the text) wraps `renpy.display.presplash.pump_window` to count as that line's Ren'Py counts and
-send the fraction its bar would draw (Droidtop/tracker#821):
+send the fraction its bar would draw (mytop-project/tracker#821):
 
 - 7.4 to 8.0: one step per pump once the script is known, over the script files plus 23;
 - 7.6 to 8.3: one step per pump from the start, over the script files plus 23;
@@ -127,7 +127,7 @@ Series patch 0010 (`renpy/enginehost_files.py`, installed by `enginehost_platfor
 counts the file calls Ren'Py makes in each start-up phase and prints them after Ren'Py's own
 `<phase> took N ms` line, as `Enginehost: file calls in <phase>: N stat (ms), N listdir (ms),
 ...`, plus one line for "interface start to ready" at `presplash.end()`, the stretch Ren'Py times
-as a whole (Droidtop/tracker#821: Bare Witness took 176 s on the console's SD card). It wraps
+as a whole (mytop-project/tracker#821: Bare Witness took 176 s on the console's SD card). It wraps
 `os.stat`, `os.lstat`, `os.listdir`, `os.scandir`, `os.open` and `open`, which every path check
 goes through; reads on an open file are not counted, since they do not cross Enginehost's
 sandbox broker. It prints no paths. The numbers say which calls a slow start is made of, so the
@@ -135,7 +135,7 @@ start is cut at its cause rather than guessed at.
 
 ## Start-up path checks are answered from Ren'Py's own folder scan (2026-10-31)
 
-The counts above gave the cause (Droidtop/tracker#853, Enginehost dev-622 on the RP5): "Loading
+The counts above gave the cause (mytop-project/tracker#853, Enginehost dev-622 on the RP5): "Loading
 script" took 52.8 s, and 36.6 s of it were 3,490 stats, about 10.5 ms each, since a stat of a game
 on the SD card crosses the broker and Android's FUSE layer one path component at a time. Most of
 them ask what Ren'Py's own scan of the game folder had answered a moment before: whether a `.rpy`
@@ -154,7 +154,7 @@ nothing after.
 ## 32-bit engines only on request, never published (2026-10-30)
 
 Official Ren'Py cores ship arm64-v8a and x86_64 only. RAPT still builds armeabi-v7a, and
-`enginehost/keep_64bit_abis.py` removes it before signing (Droidtop/tracker#646). For someone who
+`enginehost/keep_64bit_abis.py` removes it before signing (mytop-project/tracker#646). For someone who
 needs a 32-bit engine, the owner kept a way to build one: dispatch `android-plugin.yml` on a line
 with `include_32_bit` on. That build keeps RAPT's 32-bit libraries and ends as the unsigned bundle
 inputs artifact (`enginehost-renpy-<runtime>-v1-unsigned`). It is never signed or published, and
